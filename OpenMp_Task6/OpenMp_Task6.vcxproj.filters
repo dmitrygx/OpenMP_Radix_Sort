@@ -15,30 +15,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\main.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\numeric.cpp">
+    <ClCompile Include="numeric.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\sort.cpp">
+    <ClCompile Include="sort.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\util.cpp">
+    <ClCompile Include="util.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\main.h">
+    <ClInclude Include="main.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\numeric.h">
+    <ClInclude Include="numeric.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\sort.h">
+    <ClInclude Include="sort.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\util.h">
+    <ClInclude Include="util.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

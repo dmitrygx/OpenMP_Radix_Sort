@@ -18,6 +18,18 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="numeric.cpp" />
+    <ClCompile Include="sort.cpp" />
+    <ClCompile Include="util.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h" />
+    <ClInclude Include="numeric.h" />
+    <ClInclude Include="sort.h" />
+    <ClInclude Include="util.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BE792CA6-63DC-42A3-AE1E-E872009D1DA1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -149,18 +161,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\main.cpp" />
-    <ClCompile Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\numeric.cpp" />
-    <ClCompile Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\sort.cpp" />
-    <ClCompile Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\util.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\main.h" />
-    <ClInclude Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\numeric.h" />
-    <ClInclude Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\sort.h" />
-    <ClInclude Include="..\..\..\..\..\Downloads\xdmigla-openmp_task6-1578de94a601\xdmigla-openmp_task6-1578de94a601\Task6\src\util.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
