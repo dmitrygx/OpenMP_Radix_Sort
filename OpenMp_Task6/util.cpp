@@ -104,9 +104,9 @@ void OmpParseArgs(int argc, char** argv, double &min, double &max, uint &num, ui
   return;
 }
 
-void OmpPool::OmpMemoryPoolAlloc(size_t len)
+void OmpPool::OmpMemoryPoolAlloc(uint len)
 {
-  pool = new double[len];
+  pool = new double[(unsigned int)len];
 }
 
 void OmpPool::OmpMemoryPollFree()
@@ -114,7 +114,7 @@ void OmpPool::OmpMemoryPollFree()
   delete [] pool;
 }
 
-double* OmpPool::OmpAlloc(size_t len)
+double* OmpPool::OmpAlloc(uint len)
 {
   if (currentSize + len < size)
   {
@@ -135,7 +135,7 @@ double* OmpPool::OmpAlloc(size_t len)
   currentSize -= len;
 }
 */
-void OmpInitMemoryPool(size_t len)
+void OmpInitMemoryPool(uint len)
 {
   Pool = new OmpPool(len);
 }

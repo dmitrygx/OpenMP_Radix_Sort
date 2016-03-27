@@ -14,17 +14,13 @@ double* OmpNumRandomGenerate(double min, double max, uint num)
   {
     return NULL;
   }
-  srand(time(0));
+  srand((unsigned int)time(0));
   double* result = OmpGetMemoryPool()->OmpAlloc(num);
 #pragma omp parallel for schedule(static)
   for (int i = 0; i < num; ++i)
   {
     /*int this_thread = omp_get_thread_num(), num_threads = omp_get_num_threads();*/
     result[i] = OmpRand(min, max);
-    /*if (this_thread == 0)
-    {
-      cout << "num_threads = " << num_threads << endl;
-    }*/
   }
   return result;  
 }

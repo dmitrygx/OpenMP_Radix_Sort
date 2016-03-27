@@ -4,10 +4,10 @@ static uint OmpGetCountOfDigitsInteger(int integer)
 {
   int count = (integer == 0) ? 1 : 0;
 
-  while (integer != 0) 
+  while (integer != 0)
   {
-    count++;
-    integer /= 10;
+	  count++;
+	  integer /= 10;
   }
 
   return count;
@@ -25,7 +25,7 @@ static uint OmpGetCountOfDigits(double number, int &integ, double &fract)
   integ = (int) integer;
   fract = fraction;
 
-  count = OmpGetCountOfDigitsInteger(integerInt);
+  count = (int)OmpGetCountOfDigitsInteger(integerInt);
   
   return count;
 }
@@ -89,11 +89,11 @@ static double* OmpRadixSortMSDStackDouble(uint count, stack<double> st, uint pre
       double* res = OmpRadixSortMSDStackDouble(count, stack[i], precision, radix + 1);
       if (NULL != res)
       {
-	for(j = 0; j < stack[i].size(); j++)
-	{
-	  result[counter] = res[j];
-	  counter++;
-	}
+		for(j = 0; j < stack[i].size(); j++)
+		{
+			result[counter] = res[j];
+			counter++;
+		}
       }
     }
   }
@@ -144,11 +144,11 @@ static double* OmpRadixSortMSDStack(uint count, stack<double> st, uint precision
       double* res = OmpRadixSortMSDStack(count, stack[i], precision, radix + 1);
       if (NULL != res)
       {
-	for(j = 0; j < stack[i].size(); j++)
-	{
-	  result[counter] = res[j];
-	  counter++;
-	}
+		for(j = 0; j < stack[i].size(); j++)
+		{
+			result[counter] = res[j];
+			counter++;
+		}
       }
     }
   }
@@ -179,17 +179,17 @@ double* OmpRadixSortMSD(const double* array, const uint len, uint precision, uin
       if (val >= 0.0)
       {
 #pragma omp critical
-	{
-	  stack[(int)(val/pow(10, count-radix))].push(val);
-	}
+		{
+			stack[(int)(val/pow(10, count-radix))].push(val);
+		}
       }
       else
       {
-	val = val * (-1);
+		val = val * (-1);
 #pragma omp critical
-	{
-	  stackNeg[(int)(val/pow(10, count-radix))].push(val);
-	}
+		{
+			stackNeg[(int)(val/pow(10, count-radix))].push(val);
+		}
       }
       //unlock(&mutex);
     }
@@ -199,43 +199,43 @@ double* OmpRadixSortMSD(const double* array, const uint len, uint precision, uin
   int j = 0;
 #pragma omp parallel shared(counter,  stack) private(j)
   {
-#pragma omp for schedule(dynamic, CHUNK) nowait
+#pragma omp for schedule(dynamic, CHUNK)
     for (int i = NUM_VAL - 1; i >= 0; --i)
     {
       double* res = OmpRadixSortMSDStack(count, stack[i], precision, radix + 1);
       if (NULL != res)
       {
 //#pragma omp parallel shared(counter,  stack) private(j)
-	{
+		{
 //#pragma omp for schedule(dynamic, CHUNK) nowait
-	  for(j = 0; j < stack[i].size(); j++)
-	  {
-	    result[counter] = res[j];
-	    counter++;
-	  }
-	}
+			for(j = 0; j < (int)stack[i].size(); j++)
+			{
+				result[counter] = res[j];
+				counter++;
+			}
+		}
       }
     }  
   }
 #pragma omp parallel shared(stackNeg) private(j)
   {
-#pragma omp for schedule(dynamic, CHUNK) nowait 
+#pragma omp for schedule(dynamic, CHUNK)
     for (int i = 0; i < NUM_VAL; ++i)
     {
       double* res = OmpRadixSortMSDStack(count, stackNeg[i], precision, radix + 1);
       if (NULL != res)
       {
 //#pragma omp parallel shared(counter, stackNeg) private(j)
-	{
+		{
 //#pragma omp for schedule(dynamic, CHUNK) nowait 
-	  for(j = stackNeg[i].size() - 1; j >= 1; --j)
-      {
-	    result[counter] = res[j] * (-1);
-	    counter++;
-	  }
-	}
-	result[counter] = res[0] * (-1);
-	counter++;
+			for(j = stackNeg[i].size() - 1; j >= 1; --j)
+			{
+				result[counter] = res[j] * (-1);
+				counter++;
+			}
+		}
+		result[counter] = res[0] * (-1);
+		counter++;
       }
     }
   }

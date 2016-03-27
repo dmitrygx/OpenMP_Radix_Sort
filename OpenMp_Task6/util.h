@@ -15,11 +15,11 @@ class OmpPool
 {
 private:
   double* pool;
-  size_t size;
+  uint size;
   double* current;
-  size_t currentSize;
+  uint currentSize;
 public:
-  OmpPool(size_t sizeOfMem = 0)
+  OmpPool(uint sizeOfMem = 0)
   {
     size = sizeOfMem;
     currentSize = 0;
@@ -30,16 +30,16 @@ public:
     size = 0;
     currentSize = 0;
   }
-  void OmpMemoryPoolAlloc(size_t len);
+  void OmpMemoryPoolAlloc(uint len);
   void OmpMemoryPollFree();
-  double* OmpAlloc(size_t len);
+  double* OmpAlloc(uint len);
 };
 
 void OmpOutput(bool out, const char* file, const char* text, double* array, uint len);
 
 void OmpParseArgs(int argc, char** argv, double &min, double &max, uint &num, uint &precision);
 
-void OmpInitMemoryPool(size_t len);
+void OmpInitMemoryPool(uint len);
 
 void OmpTerminateMemoryPool(void);
 
