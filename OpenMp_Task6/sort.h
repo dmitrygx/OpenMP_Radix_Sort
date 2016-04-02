@@ -13,10 +13,10 @@
 #define CHUNK 10
 #endif
 
-#define NUM_VAL 10
+#define NUM_VAL 2
 
 using namespace std;
 
-double* OmpRadixSortMSD(const double* array, const uint len, uint precision, uint radix);
+double* OmpRadixSortMSD(const double* array, const uint len, uint radix);
 
 #endif
