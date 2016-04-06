@@ -53,39 +53,28 @@ double* OmpRadixSortMSDStack(stack<double> st, uint radix)
 				{
 					for (int j = 0; j < stack[i].size(); j++)
 					{
-					{
 						result[counter] = res1[j];
 						counter++;
-					}
 					}
 				}
 			}
 #pragma omp section
 			{
-				i = 0;
-				res2 = OmpRadixSortMSDStack(stack[i], radix + 1);
+				int i1 = 0;
+				res2 = OmpRadixSortMSDStack(stack[i1], radix + 1);
 				if (NULL != res2)
 				{
-					for (int j = 0; j < stack[i].size(); j++)
-					{
+					for (int j = 0; j < stack[i1].size(); j++)
 					{
 						result[thr1 + counter1] = res2[j];
 						counter1++;
-					}
 					}
 				}
 			}
 		}
 	}
-	//OmpGetMemoryPool()->OmpFree(thr1, res1);
-	//OmpGetMemoryPool()->OmpFree(thr0, res2);
-#pragma omp critical
-	{
-		for (int i = 0; i < thr0 + thr1; i++)
-		{
-			cout << radix << ": " << result[i] << "!!!thr0 = " << thr0 << " thr1 " << thr1 << endl;
-		}
-	}
+	OmpGetMemoryPool()->OmpFree(thr1, res1);
+	OmpGetMemoryPool()->OmpFree(thr0, res2);
 	return result;
 }
 
@@ -130,7 +119,7 @@ double* OmpRadixSortMSD(const double* array, const uint len, uint radix)
 	{
 #pragma omp sections
 		{
-			cout << " " << omp_get_num_threads() << endl;
+			//cout << " " << omp_get_num_threads() << endl;
 #pragma omp section
 			{
 				res1 = OmpRadixSortMSDStack(stack[0], radix + 1);
