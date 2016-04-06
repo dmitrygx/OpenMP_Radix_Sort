@@ -7,7 +7,7 @@ int main(int argc, char **argv)
 {
 	double min, max;
 	uint num, precision;
-
+	omp_set_nested(true);
 	(void)OmpParseArgs(argc, argv, min, max, num, precision);
 	OmpInitMemoryPool(num * 64);
 
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	OmpOutput(true, "omp_result.txt", "Result of array sorting:", result, num, precision);
-
+	OmpGetMemoryPool()->OmpFree(5, result);
 	OmpTerminateMemoryPool();
 
 	return 0;

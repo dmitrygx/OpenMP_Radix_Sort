@@ -38,7 +38,7 @@ public:
 	void OmpMemoryPoolAlloc(uint len);
 	void OmpMemoryPollFree();
 	double* OmpAlloc(uint len);
-	void OmpFree(uint len);
+	void OmpFree(uint len, double *mem);
 };
 
 void OmpOutput(bool out, const char* file, const char* text, double* array, uint len, uint precision);

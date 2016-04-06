@@ -10,7 +10,7 @@
 #include "util.h"
 
 #ifndef CHUNK 
-#define CHUNK 10
+#define CHUNK 2
 #endif
 
 #define NUM_VAL 2

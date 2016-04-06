@@ -120,24 +120,31 @@ void OmpPool::OmpMemoryPollFree()
 
 double* OmpPool::OmpAlloc(uint len)
 {
-	if (currentSize + len < size)
-	{
-		current = pool + currentSize;
-		currentSize += len;
-		return current;
-	}
-	else
-	{
-		cout << "Allocation error" << endl;
-		exit(0);
-	}
-	//return new double[len];
+//#pragma omp critical
+//	{
+//		if (currentSize + len < size)
+//		{
+//			current = pool + currentSize;
+//			currentSize += len;
+//			return current;
+//		}
+//		else
+//		{
+//			cout << "Allocation error" << endl;
+//			exit(0);
+//		}
+//	}
+	return new double[(int)len];
 }
 
-void OmpPool::OmpFree(uint len)
+void OmpPool::OmpFree(uint len, double * mem)
 {
-  current = current - len;
-  currentSize -= len;
+//#pragma omp critical
+//	{
+//		current = current - len;
+//		currentSize -= len;
+//	}
+	delete[] mem;
 }
 
 void OmpInitMemoryPool(uint len)

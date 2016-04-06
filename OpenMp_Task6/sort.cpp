@@ -4,6 +4,8 @@ double* OmpRadixSortMSDStack(stack<double> st, uint radix)
 {
 	double* result;
 	stack<double> stack[NUM_VAL];
+	uint thr1 = 0;
+	uint thr0 = 0;
 	if (st.empty())
 	{
 		return NULL;
@@ -11,14 +13,12 @@ double* OmpRadixSortMSDStack(stack<double> st, uint radix)
 	else
 	{
 		result = OmpGetMemoryPool()->OmpAlloc(st.size());
-		if (64 == radix)
+		if ((64 == radix) || (st.size() == 1))
 		{
 			uint counter = 0;
 			while (!st.empty())
 			{
 				result[counter] = st.top();
-				//cout << "res[" << counter << "] = " << result[counter] << endl;
-				//cout << "radix = " << radix << " count = " << count << endl;
 				st.pop();
 				counter++;
 			}
@@ -30,27 +30,48 @@ double* OmpRadixSortMSDStack(stack<double> st, uint radix)
 	{
 		double value = st.top();
 		st.pop();
+		(OmpGetBit(value, radix) == 0) ? thr0++ : thr1++;
 		stack[OmpGetBit(value, radix)].push(value);
 	}
 	uint counter = 0;
+	uint counter1 = 0;
+	uint counter2 = 0;
 	uint j = 0;
-	//#pragma omp parallel shared(counter, stack) private(j)
-	{
-		//#pragma omp for schedule(dynamic, CHUNK) nowait
-		for (int i = NUM_VAL - 1; i >= 0; --i)
-		{
-			uint stSize = stack[i].size();
-			double* res = OmpRadixSortMSDStack(stack[i], radix + 1);
-			if (NULL != res)
-			{
-				for (j = 0; j < stack[i].size(); j++)
-				{
-					result[counter] = res[j];
-					counter++;
-				}
+	int i;
 
+#pragma omp parallel shared(stack) private(j) num_threads(1)
+	{
+#pragma omp sections
+		{
+			//cout << " " << omp_get_num_threads() << endl;
+#pragma omp section
+			{
+				i = 1;
+				double* res1 = OmpRadixSortMSDStack(stack[i], radix + 1);
+				if (NULL != res1)
+				{
+					for (j = 0; j < stack[i].size(); j++)
+					{
+						result[counter] = res1[j];
+						counter++;
+					}
+					OmpGetMemoryPool()->OmpFree(thr1, res1);
+				}
 			}
-			OmpGetMemoryPool()->OmpFree(stSize);
+#pragma omp section
+			{
+				i = 0;
+				double* res2 = OmpRadixSortMSDStack(stack[i], radix + 1);
+				if (NULL != res2)
+				{
+					for (j = 0; j < stack[i].size(); j++)
+					{
+						result[counter] = res2[j];
+						counter++;
+					}
+					OmpGetMemoryPool()->OmpFree(thr0, res2);
+				}
+			}
 		}
 	}
 	return result;
@@ -58,9 +79,14 @@ double* OmpRadixSortMSDStack(stack<double> st, uint radix)
 
 double* OmpRadixSortMSD(const double* array, const uint len, uint radix)
 {
-	double* result = OmpGetMemoryPool()->OmpAlloc(len);
+	double* result;
+//#pragma omp critical
+	{
+		result = OmpGetMemoryPool()->OmpAlloc(len);
+	}
 	stack<double> stack[NUM_VAL];
-
+	uint thr1 = 0;
+	uint thr0 = 0;
 	double val = 0;
 	//create_lock(mutex);
 	//init_lock(&mutex);
@@ -74,6 +100,7 @@ double* OmpRadixSortMSD(const double* array, const uint len, uint radix)
 #pragma omp critical
 				{
 					val = array[i];
+					(OmpGetBit(val, radix)) == 0 ? thr0++ : thr1++;
 					stack[OmpGetBit(val, radix)].push(val);
 				}
 			}
@@ -81,38 +108,55 @@ double* OmpRadixSortMSD(const double* array, const uint len, uint radix)
 		}
 	}
 	//destroy_lock(&mutex);
-	uint counter = 0;
+	uint counter1 = 0;
+	uint counter2 = 0;
 	int j = 0;
-#pragma omp parallel shared(counter, stack) private(j)
+	double* res1;
+	double* res2;
+
+#pragma omp parallel shared(stack) private(j) num_threads(2)
 	{
-#pragma omp for schedule(dynamic, CHUNK)
-		for (int i = 0; i < NUM_VAL; ++i)
+#pragma omp sections
 		{
-			uint stSize = stack[i].size();
-			double* res = OmpRadixSortMSDStack(stack[i], radix + 1);
-			if (NULL != res)
+			//cout << " " << omp_get_num_threads() << endl;
+#pragma omp section
 			{
-				//#pragma omp parallel shared(counter,  stack) private(j)
+				res1 = OmpRadixSortMSDStack(stack[0], radix + 1);
+				if (NULL != res1)
 				{
-					//#pragma omp for schedule(dynamic, CHUNK) nowait
-					if (0 == i)
-					{	
-						for (j = 0; j < (int)stack[i].size(); j++)
-						{
-							result[counter] = res[j];
-							counter++;
-						}
-					}
-					else
+					//#pragma omp parallel shared(counter,  stack) private(j)
 					{
-						for (j = (int)stack[i].size() - 1; j >= 0; --j)
+						//#pragma omp for schedule(dynamic, CHUNK) nowait
+						for (j = 0; j < (int)thr0; j++)
 						{
-							result[counter] = res[j];
-							counter++;
+							result[counter1] = res1[j];
+							counter1++;
 						}
 					}
+//#pragma omp critical
+					OmpGetMemoryPool()->OmpFree(thr0, res1);
 				}
-				OmpGetMemoryPool()->OmpFree(stSize);
+			}
+		//
+#pragma omp section
+			{
+				res2 = OmpRadixSortMSDStack(stack[1], radix + 1);
+				if (NULL != res2)
+				{
+					//#pragma omp parallel shared(counter,  stack) private(j)
+					{
+						//#pragma omp for schedule(dynamic, CHUNK) nowait
+						{
+							for (j = (int)thr1 - 1; j >= 0; --j)
+							{
+								result[thr0 + counter2] = res2[j];
+								counter2++;
+							}
+						}
+					}
+//#pragma omp critical
+					OmpGetMemoryPool()->OmpFree(thr1, res2);
+				}
 			}
 		}
 	}
