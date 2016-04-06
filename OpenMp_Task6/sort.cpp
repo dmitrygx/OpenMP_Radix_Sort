@@ -30,16 +30,17 @@ double* OmpRadixSortMSDStack(stack<double> st, uint radix)
 	{
 		double value = st.top();
 		st.pop();
-		(OmpGetBit(value, radix) == 0) ? thr0++ : thr1++;
+		(OmpGetBit(value, radix)) == 0 ? thr0++ : thr1++;
 		stack[OmpGetBit(value, radix)].push(value);
 	}
+	//cout << thr0 << "    " << thr1 << endl;
 	uint counter = 0;
 	uint counter1 = 0;
 	uint counter2 = 0;
-	uint j = 0;
 	int i;
-
-#pragma omp parallel shared(stack) private(j) num_threads(1)
+	double* res1;
+	double* res2;
+#pragma omp parallel shared(stack) num_threads(2)
 	{
 #pragma omp sections
 		{
@@ -47,31 +48,42 @@ double* OmpRadixSortMSDStack(stack<double> st, uint radix)
 #pragma omp section
 			{
 				i = 1;
-				double* res1 = OmpRadixSortMSDStack(stack[i], radix + 1);
+				res1 = OmpRadixSortMSDStack(stack[i], radix + 1);
 				if (NULL != res1)
 				{
-					for (j = 0; j < stack[i].size(); j++)
+					for (int j = 0; j < stack[i].size(); j++)
+					{
 					{
 						result[counter] = res1[j];
 						counter++;
 					}
-					OmpGetMemoryPool()->OmpFree(thr1, res1);
+					}
 				}
 			}
 #pragma omp section
 			{
 				i = 0;
-				double* res2 = OmpRadixSortMSDStack(stack[i], radix + 1);
+				res2 = OmpRadixSortMSDStack(stack[i], radix + 1);
 				if (NULL != res2)
 				{
-					for (j = 0; j < stack[i].size(); j++)
+					for (int j = 0; j < stack[i].size(); j++)
 					{
-						result[counter] = res2[j];
-						counter++;
+					{
+						result[thr1 + counter1] = res2[j];
+						counter1++;
 					}
-					OmpGetMemoryPool()->OmpFree(thr0, res2);
+					}
 				}
 			}
+		}
+	}
+	//OmpGetMemoryPool()->OmpFree(thr1, res1);
+	//OmpGetMemoryPool()->OmpFree(thr0, res2);
+#pragma omp critical
+	{
+		for (int i = 0; i < thr0 + thr1; i++)
+		{
+			cout << radix << ": " << result[i] << "!!!thr0 = " << thr0 << " thr1 " << thr1 << endl;
 		}
 	}
 	return result;
@@ -118,7 +130,7 @@ double* OmpRadixSortMSD(const double* array, const uint len, uint radix)
 	{
 #pragma omp sections
 		{
-			//cout << " " << omp_get_num_threads() << endl;
+			cout << " " << omp_get_num_threads() << endl;
 #pragma omp section
 			{
 				res1 = OmpRadixSortMSDStack(stack[0], radix + 1);
