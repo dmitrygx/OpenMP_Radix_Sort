@@ -10,7 +10,7 @@
 #define GETBIT(x,pos)   ( ((x) & ( 0x1 << (pos) )) !=0 )
 
 #define OmpGetBit(x, pos)	\
-	 (pos <= 31) ? GETBIT(*(((unsigned int*)&x) + 1),(31 - pos)) : GETBIT(*(((unsigned int*)&x)),(63 - pos + 32))
+  ((pos) <= 31) ? GETBIT(*(((unsigned int*)&(x)) + 1),(31 - (pos))) : GETBIT(*(((unsigned int*)&(x))),(63 - (pos) + 32))
 
 using namespace std;
 

@@ -7,10 +7,12 @@ int main(int argc, char **argv)
 {
 	double min, max;
 	uint num, precision;
-	omp_set_nested(true);
+
 	(void)OmpParseArgs(argc, argv, min, max, num, precision);
 	OmpInitMemoryPool(num * 64);
-
+#ifdef openmp
+	omp_set_nested(true);
+#endif
 	double* array = OmpNumRandomGenerate(min, max, num);
 	double* result;
 	if (NULL == array)
@@ -21,7 +23,12 @@ int main(int argc, char **argv)
 
 	OmpOutput(true, "omp_array.txt", "Source array:", array, num, precision);
 	time_t start = clock();
-	result = OmpRadixSortMSD(array, num, 0);
+	/*for (int i = 0; i < (int) num; ++i)
+	{
+	cout << "arr = " << array[i] << endl;
+	}*/
+	//result = OmpRadixSortMSD(array, num, 0);
+	result = OmpMSDRadixSort(array, num, 0, num);
 	time_t end = clock();
 	time_t diff = end - start;
 	cout << "Time: " << ((double)diff) / CLOCKS_PER_SEC << " sec." << endl;
@@ -31,7 +38,7 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	OmpOutput(true, "omp_result.txt", "Result of array sorting:", result, num, precision);
-	OmpGetMemoryPool()->OmpFree(5, result);
+	OmpGetMemoryPool()->OmpFree(num, result);
 	OmpTerminateMemoryPool();
 
 	return 0;

@@ -10,7 +10,7 @@
 #include "util.h"
 
 #ifndef CHUNK 
-#define CHUNK 2
+#define CHUNK 10
 #endif
 
 #define NUM_VAL 2
@@ -18,5 +18,7 @@
 using namespace std;
 
 double* OmpRadixSortMSD(const double* array, const uint len, uint radix);
+
+double* OmpMSDRadixSort(const double* array, const uint len, uint radix, uint full);
 
 #endif
