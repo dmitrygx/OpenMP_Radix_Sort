@@ -228,7 +228,8 @@ double* OmpMSDRadixSort(const double* array, const uint len, uint radix, uint fu
 	uint counter2 = 0;
 	double* res1;
 	double* res2;
-	if (len >= 10000)
+
+	if (len > full / 2/*omp_get_num_threads()*/)
 	{
 #pragma omp parallel shared(aux) num_threads(2)
 	{
